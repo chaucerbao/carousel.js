@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="src/css/carousel.css">
+  </head>
+  <body>
+    <div id="hero">
+      <ul class="carousel">
+        <li class="s-1"><a href=""><img src="http://fpoimg.com/300x250" alt=""></a></li>
+        <li class="s-2"><a href=""><img src="http://fpoimg.com/300x250" alt=""></a></li>
+        <li class="s-3"><a href=""><img src="http://fpoimg.com/300x250" alt=""></a></li>
+        <li class="s-4"><a href=""><img src="http://fpoimg.com/300x250" alt=""></a></li>
+        <li class="s-5"><a href=""><img src="http://fpoimg.com/300x250" alt=""></a></li>
+      </ul>
+      <a class="carousel-previous" href="#previousSlide">Previous</a>
+      <a class="carousel-next" href="#nextSlide">Next</a>
+      <a class="carousel-play" href="#play">Play</a>
+      <a class="carousel-stop" href="#stop">Stop</a>
+    </div>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/3.0.4/jquery.imagesloaded.min.js"></script>
+    <script src="src/js/carousel.js"></script>
+    <script>
+      $('#hero').carousel({debug: true});
+    </script>
+  </body>
+</html>

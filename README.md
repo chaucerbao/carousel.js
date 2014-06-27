@@ -1,0 +1,3 @@
+# A Javascript Carousel
+
+Everyone's got one...
