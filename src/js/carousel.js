@@ -71,13 +71,20 @@
             $carousel.find('>:first').css('marginLeft', 0);
             log('Go to previous slide');
           }, 0);
+          count = -1;
         } else {
           /* Go to next slide */
           var $firstSlide = $carousel.find('>:first');
           $firstSlide.clone(true).appendTo($carousel);
           $firstSlide.css('marginLeft', -slideWidth);
           log('Go to next slide');
+          count = 1;
         }
+        $parent.trigger({
+          type: "carousel.change",
+          total: $slides.length,
+          count: count
+        });
       }
     }
 
@@ -112,6 +119,12 @@
       play();
       log('Slideshow auto-started');
     }
+
+    $parent.trigger({
+      type: "carousel.change",
+      total: $slides.length,
+      count: 0
+    });
 
     return this;
   };
