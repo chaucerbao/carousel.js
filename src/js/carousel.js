@@ -13,7 +13,7 @@
       $parent = $(this),
       $carousel = $parent.find('.' + prefix),
       $slides = $carousel.find('> *'),
-      slideWidth = $slides.first().outerWidth(true),
+      slideWidth = $parent.width(),
       isTransitioning = false,
       isPrevious = false,
       isPlaying = false,
@@ -22,11 +22,11 @@
     $slides.addClass(prefix + '-slide');
     $parent.addClass(prefix + '-parent');
 
-    /* Recalculate the slide width after images are loaded */
-    $slides.imagesLoaded().done(function() {
-      slideWidth = $slides.first().outerWidth(true);
-      $carousel.width(($slides.length + 1) * slideWidth);
-      log('Images are loaded')
+    /* Set widths */
+    $carousel.css('width',($slides.length*100)+'%');
+    $slides.css('width',(100/$slides.length)+'%');
+    $(window).resize(function() {
+      slideWidth = $parent.width();
     });
 
     $parent
