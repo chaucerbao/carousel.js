@@ -23,8 +23,8 @@
     $parent.addClass(prefix + '-parent');
 
     /* Set widths */
-    $carousel.css('width',($slides.length*100)+'%');
-    $slides.css('width',(100/$slides.length)+'%');
+    $carousel.css('width',(($slides.length+1)*100)+'%');
+    $slides.css('width',(100/($slides.length+1))+'%');
     $(window).resize(function() {
       slideWidth = $parent.width();
     });
