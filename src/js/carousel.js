@@ -64,26 +64,24 @@
         isTransitioning = true;
         isPrevious = (count < 0) ? true : false;
 
-        if (count < 0) {
+        if (isPrevious) {
           /* Go to previous slide */
           $carousel.find('>:last').clone(true).css('marginLeft', -slideWidth).prependTo($carousel);
           setTimeout(function() {
             $carousel.find('>:first').css('marginLeft', 0);
             log('Go to previous slide');
           }, 0);
-          count = -1;
         } else {
           /* Go to next slide */
           var $firstSlide = $carousel.find('>:first');
           $firstSlide.clone(true).appendTo($carousel);
           $firstSlide.css('marginLeft', -slideWidth);
           log('Go to next slide');
-          count = 1;
         }
         $parent.trigger({
           type: "carousel.change",
           total: $slides.length,
-          count: count
+          count: (isPrevious ? -1 : 1)
         });
       }
     }
