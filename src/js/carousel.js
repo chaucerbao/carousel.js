@@ -22,11 +22,15 @@
     $slides.addClass(prefix + '-slide');
     $parent.addClass(prefix + '-parent');
 
+    /* Add last slide to beginning */
+    $carousel.find('>:last').clone(true).css('marginLeft', -slideWidth).prependTo($carousel);
+
     /* Set widths */
     $carousel.css('width',(($slides.length+1)*100)+'%');
     $slides.css('width',(100/($slides.length+1))+'%');
     $(window).resize(function() {
       slideWidth = $parent.width();
+      $carousel.find('>:first').css('marginLeft', -slideWidth);
     });
 
     $parent
@@ -49,9 +53,9 @@
       .on('transitionend', function() {
         if (isTransitioning) {
           if (isPrevious) {
-            $carousel.find('>:last').remove();
+            $carousel.find('>:last').clone(true).css('marginLeft', -slideWidth).prependTo($carousel);
           } else {
-            $carousel.find('>:first').remove();
+            $carousel.find('>:first').clone(true).css('marginLeft','').appendTo($carousel);
           }
 
           isPrevious = false;
@@ -66,16 +70,13 @@
 
         if (isPrevious) {
           /* Go to previous slide */
-          $carousel.find('>:last').clone(true).css('marginLeft', -slideWidth).prependTo($carousel);
-          setTimeout(function() {
-            $carousel.find('>:first').css('marginLeft', 0);
-            log('Go to previous slide');
-          }, 0);
+          $carousel.find('>:last').remove();
+          $carousel.find('>:first').css('marginLeft', '');
+          log('Go to previous slide');
         } else {
           /* Go to next slide */
-          var $firstSlide = $carousel.find('>:first');
-          $firstSlide.clone(true).appendTo($carousel);
-          $firstSlide.css('marginLeft', -slideWidth);
+          $carousel.find('>:first').remove();
+          $carousel.find('>:first').css('marginLeft', -slideWidth);
           log('Go to next slide');
         }
         $parent.trigger({
