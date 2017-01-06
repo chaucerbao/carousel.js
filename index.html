@@ -154,7 +154,7 @@
     <p>Here is the new HTML structure generated from the previous code. Use the class names to customize your own CSS theme.</p>
 
     <code class="html">
-      <div class="my-carousel carousel">
+      <div class="carousel my-carousel">
         <div class="carousel__slides">
           <div class="carousel__slide">
             <div>First slide</div>
@@ -184,7 +184,13 @@
     <p>Options are defined as a Javascript object.</p>
 
     <dl>
-      <dt>duration <em>(integer | default: 750)</em></dt>
+      <dt>autoPlay <em>(boolean | default: false)</em></dt>
+      <dd>Automatically start the slide show.</dd>
+
+      <dt>delay <em>(integer | default: 4000)</em></dt>
+      <dd>The time in milliseconds between slides when the slide show is active.</dd>
+
+      <dt>duration <em>(integer | default: 400)</em></dt>
       <dd>The time in milliseconds to transition between slides.</dd>
 
       <dt>infinite <em>(boolean | default: false)</em></dt>
@@ -222,6 +228,12 @@
 
       <dt>goTo(<em>integer</em>)</dt>
       <dd>Transition to the slide at the `slideIndex` position, zero-indexed.</dd>
+
+      <dt>play()</dt>
+      <dd>Start playing the slide show.</dd>
+
+      <dt>pause()</dt>
+      <dd>Pause the slide show.</dd>
     </dl>
 
     <h2>Examples</h2>
@@ -276,6 +288,21 @@
         const carouselThree = new Carousel('.carousel-3', {
           rewind: true,
           showDots: false
+        })
+      </script>
+    </div>
+
+    <div class="example">
+      <div class="carousel-4 carousel-theme">
+        <div><strong>Slide show</strong><br /><br />Slide 1</div>
+        <div><strong>Slide show</strong><br /><br />Slide 2</div>
+        <div><strong>Slide show</strong><br /><br />Slide 3</div>
+      </div>
+
+      <script>
+        const carouselFour = new Carousel('.carousel-4', {
+          autoPlay: true,
+          infinite: true
         })
       </script>
     </div>

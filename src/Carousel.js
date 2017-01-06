@@ -4,7 +4,9 @@ class Carousel {
 
     // Merge provided options with defaults
     const mergedOptions = Object.assign({
-      duration: 750,
+      autoPlay: false,
+      delay: 4000,
+      duration: 400,
       infinite: false,
       rewind: false,
       showControls: true,
@@ -15,13 +17,16 @@ class Carousel {
     // Assign class variables
     Object.assign(
       this,
-      this.scaffold(carouselElement, mergedOptions), {
+      this.scaffold(carouselElement, mergedOptions),
+      {
         options: mergedOptions,
         slideIndex: 0,
         xPosition: 0,
         touchStartX: null,
         touchMoveX: null,
         slideWidth: null,
+        slideShowHandler: null,
+        isSlideShowActive: false,
         isTransitioning: false
       }
     )
@@ -29,11 +34,17 @@ class Carousel {
     // Show the first slide
     this.goTo(this.slideIndex, true)
 
+    if (mergedOptions.autoPlay) {
+      this.play()
+    }
+
     // Reveal controls to the user
     return {
       goTo: this.goTo.bind(this),
       next: this.next.bind(this),
-      previous: this.previous.bind(this)
+      previous: this.previous.bind(this),
+      play: this.play.bind(this),
+      pause: this.pause.bind(this)
     }
   }
 
@@ -180,17 +191,33 @@ class Carousel {
     this.xPosition = xPosition
     this.slideIndex = toIndex
 
+    if (this.isSlideShowActive) {
+      this.pause()
+      this.play()
+    }
+
     if (toIndex === fromIndex) {
       this.isTransitioning = false
     }
   }
 
+  // Controls
   previous () {
     this.goTo(this.slideIndex - 1)
   }
 
   next () {
     this.goTo(this.slideIndex + 1)
+  }
+
+  play () {
+    this.isSlideShowActive = true
+    this.slideShowHandler = setInterval(this.next.bind(this), this.options.delay)
+  }
+
+  pause () {
+    clearInterval(this.slideShowHandler)
+    this.isSlideShowActive = false
   }
 
   // Slide animations
@@ -209,6 +236,7 @@ class Carousel {
     })
   }
 
+  // Position
   moveX (xPosition) {
     const element = this.slidesElement
     element.style.transform = `translateX(calc(100% * ${xPosition} / ${element.getBoundingClientRect().width}))`
@@ -218,6 +246,10 @@ class Carousel {
   touchStart (e) {
     if (this.isTransitioning) {
       return false
+    }
+
+    if (this.isSlideShowActive) {
+      clearInterval(this.slideShowHandler)
     }
 
     this.touchStartX = e.touches[0].pageX
