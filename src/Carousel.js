@@ -158,26 +158,25 @@ class Carousel {
     // Determine if and how to slide, based on options
     if (!force) {
       // Check the `onSlide` callback
-      if (options.onSlide(toIndex, fromIndex) === false) {
+      if (
+        options.onSlide(toIndex, fromIndex) === false ||
+
+        // Check if `rewind` option is disabled
+        (!rewind && !infinite && (
+          (fromTheEnd && toTheStart) ||
+          (fromTheStart && toTheEnd)
+        ))
+      ) {
         this.isTransitioning = false
         return false
       }
 
+      // Reveal cloned slides if `infinite` option is enabled
       if (infinite) {
-        // Infinite
         if (fromTheStart && toTheEnd && index < 0) {
           xPosition = slideWidth
         } else if (fromTheEnd && toTheStart && index >= slidesCount) {
           xPosition = slidesCount * -slideWidth
-        }
-      } else {
-        // Rewind
-        if (!rewind && (
-            (fromTheEnd && toTheStart) ||
-            (fromTheStart && toTheEnd)
-          )) {
-          this.isTransitioning = false
-          return false
         }
       }
     }
