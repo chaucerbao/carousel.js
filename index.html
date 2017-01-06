@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Carousel.js v2</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,400i,700">
+    <style type="text/css">
+      body {
+        font-family: 'Roboto', sans-serif;
+      }
+
+      dl {
+        border: solid black 1px;
+        padding: 10px;
+      }
+
+      dd {
+        margin-bottom: 10px;
+      }
+
+      dd:last-of-type {
+        margin-bottom: 0;
+      }
+
+      .example {
+        margin: 20px auto;
+      }
+    </style>
+
+    <style type="text/css">
+      /* CSS theme for the carousel examples */
+      .carousel-theme {
+        margin: auto;
+        width: 400px;
+      }
+
+      .carousel-theme .carousel__slide {
+        background: Gainsboro;
+        height: 300px;
+        text-align: center;
+
+        display: flex;
+        justify-content: space-around;
+        flex-direction: column;
+      }
+
+      /* Carousel controls centered at left/right edges */
+      .carousel-theme .carousel__control {
+        background: LightSteelBlue;
+        box-shadow: 2px 2px 2px rgba(0, 0, 0, .25);
+        pointer-events: initial;
+
+        position: absolute;
+        top: calc(50% - 20px);
+
+        width: 50px;
+        height: 40px;
+      }
+
+      .carousel-theme .carousel__control::before {
+        display: block;
+        line-height: 40px;
+        text-align: center;
+      }
+
+      .carousel-theme .carousel__previous {
+        left: 0;
+      }
+
+      .carousel-theme .carousel__previous::before {
+        content: 'Prev';
+      }
+
+      .carousel-theme .carousel__next {
+        right: 0;
+      }
+
+      .carousel-theme .carousel__next::before {
+        content: 'Next';
+      }
+
+      /* Carousel dots centered at the bottom edge */
+      .carousel-theme .carousel__dots {
+        display: flex;
+        justify-content: center;
+
+        position: absolute;
+        bottom: 10px;
+        left: 0;
+
+        width: 100%;
+      }
+
+      /* Draw dot shape */
+      .carousel-theme .carousel__dot {
+        background: LightSteelBlue;
+        box-shadow: 2px 2px 2px rgba(0, 0, 0, .25);
+        border-radius: 50%;
+
+        width: 10px;
+        height: 10px;
+
+        margin: 0 5px;
+      }
+
+      /* Highlight the active dot, and active control when pressed */
+      .carousel-theme .carousel__control:active,
+      .carousel-theme .carousel__dot--active {
+        background: SteelBlue;
+      }
+    </style>
+
+    <!-- Syntax highlighting -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/github.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+
+    <!-- Carousel.js v2 -->
+    <link rel="stylesheet" href="dist/carousel.css">
+    <script src="dist/carousel.js"></script>
+  </head>
+
+  <body>
+    <h1>Carousel.js v2</h1>
+    <p>A lightweight, no dependency, implementation of a carousel. There is minimal CSS provided to help guide the carousel's behavior. As for visual styling, every site has a different theme, so it's better that you provide your own CSS.</p>
+
+    <h2>Usage</h2>
+    <p>Create a new carousel instance by passing a CSS selector of your carousel to the Carousel class. Each of the immediate children will be considered a slide.</p>
+
+    <code class="javascript">
+      const carouselControls = new Carousel(selector[, options])
+    </code>
+
+    <strong>Example</strong>
+
+    <code class="html">
+      <!-- This carousel has 3 slides -->
+      <div class="my-carousel">
+        <div>First slide</div>
+        <img src="" alt="Slide 2" />
+        <div>Third slide</div>
+      </div>
+
+      <scriptExample>
+        const myCarousel = new Carousel('.my-carousel', {
+          duration: 500
+        })
+      </scriptExample>
+    </code>
+
+    <p>Here is the new HTML structure generated from the previous code. Use the class names to customize your own CSS theme.</p>
+
+    <code class="html">
+      <div class="my-carousel carousel">
+        <div class="carousel__slides">
+          <div class="carousel__slide">
+            <div>First slide</div>
+          </div>
+          <div class="carousel__slide">
+            <img src="" alt="Slide 2" />
+          </div>
+          <div class="carousel__slide">
+            <div>Third slide</div>
+          </div>
+        </div>
+
+        <div class="carousel__controls">
+          <div class="carousel__control carousel__previous"></div>
+          <div class="carousel__control carousel__next"></div>
+        </div>
+
+        <div class="carousel__dots">
+          <div class="carousel__dot carousel__dot--active"></div>
+          <div class="carousel__dot"></div>
+          <div class="carousel__dot"></div>
+        </div>
+      </div>
+    </code>
+
+    <h2>Options</h2>
+    <p>Options are defined as a Javascript object.</p>
+
+    <dl>
+      <dt>duration <em>(integer | default: 750)</em></dt>
+      <dd>The time in milliseconds to transition between slides.</dd>
+
+      <dt>infinite <em>(boolean | default: false)</em></dt>
+      <dd>Repeat the slide deck when either end is reached.</dd>
+
+      <dt>rewind <em>(boolean | default: false)</em></dt>
+      <dd>Rewind over the slide deck when either end is reached.</dd>
+
+      <dt>showControls <em>(boolean | default: true)</em></dt>
+      <dd>Whether or not to render the previous/next controls.</dd>
+
+      <dt>showDots <em>(boolean | default: true)</em></dt>
+      <dd>Whether or not to render the dot indicators.</dd>
+
+      <dt>onSlide <em>(function(toIndex, fromIndex))</em></dt>
+      <dd>A callback function that runs before transitioning to another slide. Return <em>false</em> to stop the transition.</dd>
+    </dl>
+
+    <h2>Methods</h2>
+    <p>The carousel constructor returns controls for that carousel.</p>
+
+    <code class="javascript">
+      const myCarousel = new Carousel('.my-carousel')
+
+      /* Transition to the next slide */
+      myCarousel.next()
+    </code>
+
+    <dl>
+      <dt>next()</dt>
+      <dd>Transition to the next slide.</dd>
+
+      <dt>previous()</dt>
+      <dd>Transition to the previous slide.</dd>
+
+      <dt>goTo(<em>integer</em>)</dt>
+      <dd>Transition to the slide at the `slideIndex` position, zero-indexed.</dd>
+    </dl>
+
+    <h2>Examples</h2>
+    <p>All these examples use the same basic theme located in the source code of this page. You can use it as a starting point, or create your own. Check out the generated HTML structure in the Usage section above.</p>
+
+    <div class="example">
+      <div class="carousel-1 carousel-theme">
+        <div>
+          <strong>Welcome!</strong><br /><br />
+          Here's an example width default options,<br />but this button can also activate<br />the next slide<br /><br />
+          <button type="button">Let's begin</button>
+        </div>
+
+        <img src="//lorempixel.com/400/300" alt="" width="400" height="300" />
+
+        <div>
+          <strong>The End!</strong>
+        </div>
+      </div>
+
+      <script>
+        const carouselOne = new Carousel('.carousel-1')
+
+        document.querySelector('.carousel-1 button').addEventListener('click', () => {
+          carouselOne.next()
+        })
+      </script>
+    </div>
+
+    <div class="example">
+      <div class="carousel-2 carousel-theme">
+        <div>Infinite carousel keeps going...</div>
+        <div>...and going</div>
+      </div>
+
+      <script>
+        const carouselTwo = new Carousel('.carousel-2', {
+          duration: 250,
+          infinite: true
+        })
+      </script>
+    </div>
+
+    <div class="example">
+      <div class="carousel-3 carousel-theme">
+        <div>Click previous to fast forward to the end.<br />Plus, no dots!</div>
+        <div>This is the middle.</div>
+        <div>Click next to rewind to the beginning.<br />Yeah, dot-less.</div>
+      </div>
+
+      <script>
+        const carouselThree = new Carousel('.carousel-3', {
+          rewind: true,
+          showDots: false
+        })
+      </script>
+    </div>
+
+    <script>
+      /* Syntax highlighting <code /> blocks */
+      const codeBlocks = document.querySelectorAll('code')
+      for (let i = 0, size = codeBlocks.length; i < size; i++) {
+        let content = codeBlocks[i].innerHTML
+
+        const indentation = content.search(/\S/) - 1
+        const unindentRegex = new RegExp(`\\n {0,${indentation}}`, 'g')
+
+        codeBlocks[i].innerHTML = content
+          .replace(unindentRegex, '\n')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/scriptExample/gi, 'script')
+          .trim()
+
+        hljs.highlightBlock(codeBlocks[i])
+
+        const preElement = document.createElement('pre')
+        codeBlocks[i].insertAdjacentElement('afterend', preElement)
+        preElement.appendChild(codeBlocks[i])
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1 @@
+.carousel{overflow:hidden;position:relative}.carousel__slides{display:-webkit-box;display:-ms-flexbox;display:flex;position:relative}.carousel__slide--clone{height:100%;position:absolute}.carousel__controls{pointer-events:none}.carousel__control,.carousel__dot{cursor:pointer}

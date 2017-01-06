@@ -1,0 +1,25 @@
+.carousel {
+  overflow: hidden;
+  position: relative;
+
+  &__slides {
+    display: flex;
+    position: relative;
+  }
+
+  &__slide {
+    &--clone {
+      height: 100%;
+      position: absolute;
+    }
+  }
+
+  &__controls {
+    pointer-events: none;
+  }
+
+  &__control,
+  &__dot {
+    cursor: pointer;
+  }
+}
