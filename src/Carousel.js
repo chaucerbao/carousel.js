@@ -262,10 +262,12 @@ class Carousel {
       return false
     }
 
-    e.preventDefault()
-
     this.touchMoveX = e.touches[0].pageX
     this.trackTouchMovement()
+
+    if (Math.abs(this.touchStartX - this.touchMoveX) > 50) {
+      e.preventDefault()
+    }
   }
 
   touchEnd (e) {
