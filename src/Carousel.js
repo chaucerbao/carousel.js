@@ -129,10 +129,12 @@ class Carousel {
     }
     this.isTransitioning = true
 
+    this.measureSlide()
+
     const {
       slideIndex: fromIndex,
-      slidesElement,
       slides,
+      slideWidth,
       dots,
       options
     } = this
@@ -151,7 +153,7 @@ class Carousel {
     const toTheStart = (toIndex === firstSlideIndex)
     const toTheEnd = (toIndex === lastSlideIndex)
 
-    let xPosition = -slides[toIndex].offsetLeft
+    let xPosition = toIndex * -slideWidth
 
     // Determine if and how to slide, based on options
     if (!force) {
@@ -164,9 +166,9 @@ class Carousel {
       if (infinite) {
         // Infinite
         if (fromTheStart && toTheEnd && index < 0) {
-          xPosition = slides[firstSlideIndex].getBoundingClientRect().width
+          xPosition = slideWidth
         } else if (fromTheEnd && toTheStart && index >= slidesCount) {
-          xPosition = -slidesElement.getBoundingClientRect().width
+          xPosition = slidesCount * -slideWidth
         }
       } else {
         // Rewind
@@ -180,25 +182,27 @@ class Carousel {
       }
     }
 
+    this.moveX(xPosition)
+
+    // If already at target `xPosition`, there is no transition
+    if (toIndex * -slideWidth === xPosition) {
+      this.isTransitioning = false
+    }
+
     // Update the active dot
     if (options.showDots) {
       dots[fromIndex].classList.remove('carousel__dot--active')
       dots[toIndex].classList.add('carousel__dot--active')
     }
 
-    this.moveX(xPosition)
-
-    this.xPosition = xPosition
-    this.slideIndex = toIndex
-
+    // Reset the slide show delay
     if (this.isSlideShowActive) {
       this.pause()
       this.play()
     }
 
-    if (toIndex === fromIndex) {
-      this.isTransitioning = false
-    }
+    this.xPosition = xPosition
+    this.slideIndex = toIndex
   }
 
   // Controls
@@ -220,7 +224,7 @@ class Carousel {
     this.isSlideShowActive = false
   }
 
-  // Slide animations
+  // Enable/disable slide animations
   enableSlideAnimation (element = this.slidesElement, options = this.options) {
     return Object.assign(element.style, {
       transitionProperty: 'transform',
@@ -238,8 +242,12 @@ class Carousel {
 
   // Position
   moveX (xPosition) {
-    const element = this.slidesElement
-    element.style.transform = `translateX(calc(100% * ${xPosition} / ${element.getBoundingClientRect().width}))`
+    const {
+      slides,
+      slideWidth
+    } = this
+
+    this.slidesElement.style.transform = `translateX(calc(100% * ${xPosition} / ${slides.length * slideWidth}))`
   }
 
   // Event handlers
@@ -248,12 +256,13 @@ class Carousel {
       return false
     }
 
+    // Pause the slide show, but keep it active
     if (this.isSlideShowActive) {
       clearInterval(this.slideShowHandler)
     }
 
     this.touchStartX = e.touches[0].pageX
-    this.slideWidth = this.slides[0].getBoundingClientRect().width
+    this.measureSlide()
     this.disableSlideAnimation()
   }
 
@@ -265,6 +274,7 @@ class Carousel {
     this.touchMoveX = e.touches[0].pageX
     this.trackTouchMovement()
 
+    // Stop page from scrolling if user is trying to slide
     if (Math.abs(this.touchStartX - this.touchMoveX) > 50) {
       e.preventDefault()
     }
@@ -286,10 +296,6 @@ class Carousel {
     const touchDeltaX = touchStartX - touchMoveX
     const threshold = slideWidth / 4
 
-    this.touchStartX = null
-    this.touchMoveX = null
-    this.slideWidth = null
-
     if (Math.abs(touchDeltaX) > threshold) {
       if (touchDeltaX < 0) {
         // Snap to previous slide
@@ -299,9 +305,12 @@ class Carousel {
         this.goTo(slideIndex + 1)
       }
     } else {
-      // Snap to current slide
+      // Snap back to current slide
       this.goTo(slideIndex)
     }
+
+    this.touchStartX = null
+    this.touchMoveX = null
   }
 
   trackTouchMovement () {
@@ -321,17 +330,17 @@ class Carousel {
     const {
       requestAnimationFrame
     } = window
-    const boundary = slideWidth - 0.0001
 
-    let touchDeltaX = Math.max(Math.min((touchStartX - touchMoveX), boundary), -boundary)
+    let touchDeltaX = Math.max(Math.min((touchStartX - touchMoveX), slideWidth), -slideWidth)
     let touchX = xPosition - touchDeltaX
 
     // Restrict touch movement to visible slides
     if (!options.infinite) {
-      touchX = Math.max(Math.min(touchX, 0), -slides[slides.length - 1].offsetLeft)
+      touchX = Math.max(Math.min(touchX, 0), (slides.length - 1) * -slideWidth)
     }
 
     this.moveX(touchX)
+
     requestAnimationFrame(this.trackTouchMovement.bind(this))
   }
 
@@ -343,9 +352,9 @@ class Carousel {
     if (options.infinite) {
       const {
         slideIndex,
-        slides
+        slideWidth
       } = this
-      const xPosition = -slides[slideIndex].offsetLeft
+      const xPosition = slideIndex * -slideWidth
 
       // Instantly reposition the `slidesElement`
       this.disableSlideAnimation()
@@ -364,6 +373,10 @@ class Carousel {
     element.classList.add.apply(element.classList, Array.isArray(classNames) ? classNames : [classNames])
 
     return element
+  }
+
+  measureSlide () {
+    this.slideWidth = this.slides[0].getBoundingClientRect().width
   }
 }
 
